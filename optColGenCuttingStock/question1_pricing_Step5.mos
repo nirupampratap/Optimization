@@ -1,0 +1,42 @@
+model hw5prob1_2LP
+uses "mmxprs"; !gain access to the Xpress-Optimizer solver
+uses "mmsystem"
+
+
+declarations
+! you may need to define additional variables
+ m  = 1..3 ! index range
+ w  : array(1..3) of real
+ a  : array(1..3) of mpvar
+ y  : array(1..3) of real
+ W  : integer
+ obj : linctr
+end-declarations
+w:: [20, 40, 50]
+!y:: [1/4, 1/4, 1/2]
+!y:: [0.125, 0.25, 0.291667]
+!y:: [0.125, 0.23611, 0.291667]
+y:: [0.117647, 0.235294, 0.294118]
+W:= 170
+
+a(1) >= 0
+a(2) >= 0
+a(3) >= 0
+
+a(1)*w(1) + a(2)*w(2) + a(3) * w(3) <= W
+
+forall (i in 1..3)
+	a(i) is_integer
+
+Objective := sum(i in m) a(i)*y(i)
+
+! now we are ready to invoke the solver to minimize the objective function
+maximize (Objective)
+
+! solve the problem and print solution
+writeln("Solution: ", getobjval)
+
+! you need to print out all the variables
+forall(i in m) writeln(getsol(a(i)))
+
+end-model
